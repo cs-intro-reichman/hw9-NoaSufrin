@@ -122,22 +122,18 @@ public class MemorySpace {
 	public void defrag() {
 		//// Write your code here
 		Node curNode = freeList.getFirst();
-		
 		while (curNode != null) {
 			Node nextNode = curNode.next;
 
 			while (nextNode != null) {
-				MemoryBlock nextBlock = nextNode.block;
-				MemoryBlock curBlock = curNode.block;
-
-				if (nextBlock.baseAddress == curBlock.baseAddress + curBlock.length){
-					curBlock.length += nextBlock.length;
-					freeList.remove(nextBlock);
+				if (nextNode.block.baseAddress == curNode.block.length + curNode.block.baseAddress){
+					curNode.block.length += nextNode.block.length;
+					freeList.remove(nextNode.block);
 					nextNode = curNode.next;
 
-				} else if (curBlock.baseAddress == nextBlock.baseAddress + nextBlock.length) {
-					nextBlock.baseAddress = curBlock.baseAddress;
-					nextBlock.length += curBlock.length;
+				} else if (curNode.block.baseAddress == nextNode.block.length + nextNode.block.baseAddress) {
+					nextNode.block.baseAddress = curNode.block.baseAddress;
+					nextNode.block.length += curNode.block.length;
 					freeList.remove(curNode);
 					curNode = freeList.getFirst();
 					break;
