@@ -91,7 +91,8 @@ public class MemorySpace {
 	 */
 	public void free(int address) {
 		//// Write your code here
-		if (freeList.getSize() == 1 && freeList.getFirst().block.baseAddress == 0 && freeList.getFirst().block.length == 100) {
+		if (freeList.getSize() == 1 && freeList.getFirst().block.baseAddress == 0
+			 && freeList.getFirst().block.length == 100) {
 			throw new IllegalArgumentException("index must be between 0 and size");
 		}
 		for (int i = 0; i < allocatedList.getSize(); i++) {
@@ -120,32 +121,33 @@ public class MemorySpace {
 	 */
 	public void defrag() {
 		//// Write your code here
-		Node currentNode = freeList.getFirst();
-		while (currentNode != null) {
-			Node nextNode = currentNode.next;
+		Node curNode = freeList.getFirst();
+		
+		while (curNode != null) {
+			Node nextNode = curNode.next;
 
 			while (nextNode != null) {
-				MemoryBlock currentBlock = currentNode.block;
 				MemoryBlock nextBlock = nextNode.block;
+				MemoryBlock curBlock = curNode.block;
 
-				if (nextBlock.baseAddress == currentBlock.baseAddress + currentBlock.length){
-					currentBlock.length += nextBlock.length;
+				if (nextBlock.baseAddress == curBlock.baseAddress + curBlock.length){
+					curBlock.length += nextBlock.length;
 					freeList.remove(nextBlock);
-					nextNode = currentNode.next;
+					nextNode = curNode.next;
 
-				} else if (currentBlock.baseAddress == nextBlock.baseAddress + nextBlock.length) {
-					nextBlock.length += currentBlock.length;
-					nextBlock.baseAddress = currentBlock.baseAddress;
-					freeList.remove(currentNode);
-					currentNode = freeList.getFirst();
+				} else if (curBlock.baseAddress == nextBlock.baseAddress + nextBlock.length) {
+					nextBlock.baseAddress = curBlock.baseAddress;
+					nextBlock.length += curBlock.length;
+					freeList.remove(curNode);
+					curNode = freeList.getFirst();
 					break;
 					
 				} else {
 					nextNode = nextNode.next;
 				}
 			}
-			if (currentNode != null) {
-				currentNode = currentNode.next;
+			if (curNode != null) {
+				curNode = curNode.next;
 			}	
 		}
 	}
